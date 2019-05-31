@@ -13,7 +13,7 @@ def FluidGA(benchmark = Benchmark.rastrigin, tam_entradas=24, num_entradas=2, ma
     creator.create("avaliacao", base.Fitness, weights=pesos)  ##setando objetivo das avaliacoes ###
 
     creator.create("Individuo", list, fitness=creator.avaliacao)  ##Criando tipo de Individuos
-#
+
     toolbox = base.Toolbox()  ## Instanciando objeto Toolbox
 
     toolbox.register("ini_gene", random.randint, 0,1)  ## registrando ferramenta para pegar bit ramdomico (0 ou 1)
