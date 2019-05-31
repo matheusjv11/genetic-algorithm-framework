@@ -12,6 +12,7 @@ class Benchmark:
         self.funcao = funcao_benchmark
 
     def bin_to_entradas(self, individuo):
+
         escopo = self.max - self.min
 
         fator = escopo /(2**self.tam - 1)
@@ -93,31 +94,6 @@ def schaffer(list_entradas):
     return 0.5 + (soma1 / soma2),
 
 
-def zdt1(list_entradas):
-    x1 = list_entradas[0]
-    x = 0.0
-
-    for i in range(1, len(list_entradas)):
-        x = list_entradas[i] + x
-    gx = 1 + (9 / (len(list_entradas) - 1) * x)
-
-    x = gx * (1 - (np.sqrt(x1 / gx)))
-
-    return x1, x
-
-
-def zdt2(list_entradas):
-    x1 = list_entradas[0]
-    x = 0.0
-
-    for i in range(1, len(list_entradas)):
-        x = list_entradas[i] + x
-    gx = 1 + (9 / (len(list_entradas) - 1) * x)
-
-    x = gx * (1 - ((x1 / gx) ** 2))
-
-    return x1, x
-
 def info(benchmark):
     if benchmark == rastrigin or benchmark == 0 or benchmark == "Rastrigin":
         return -5.12, 5.12, (-1.0,), (0,), 'Rastrigin'
@@ -131,8 +107,6 @@ def info(benchmark):
         return -10.0, 10.0, (-1.0,), (-29.6733337,), 'Shubert3'
     if benchmark == schaffer or benchmark == 5 or benchmark == "Schaffer":
         return -100, 100, (-1.0,), (0,), 'Schaffer'
-    if benchmark == zdt1 or benchmark == 6 or benchmark == "ZDT1":
-        return 1, 1, (1,), (1,) #Not Working
-    if benchmark == zdt2 or benchmark == 7 or benchmark == "ZDT2":
-        return 1, 1, (1,), (1,) #Not Working
+    if benchmark == schaffer or benchmark == 5 or benchmark == "Schaffer":
+        return -100, 100, (-1.0,), (0,), 'Schaffer'
     return 0, 1, (-1), (0,)

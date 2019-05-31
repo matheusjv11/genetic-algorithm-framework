@@ -7,10 +7,7 @@ from Operadores import Trangenic
 import numpy as np
 from Ferramentas.Finaliza_evolucao import finaliza_evolucao
 
-def trangenicGA(config=4, benchmark = Benchmark.rastrigin, tam_entradas=24, num_entradas=2, max_geracoes=250, populacao_inicial=100, prob_mut=0.2, prob_p_flip_bit=0.05, prob_p_cruz=0.5, tam_torneio=3, fator_aprox_histo=0.0001):
-    if config > 4 or config < 0:
-        print("config " + str(config) + " não existe")
-        return None
+def trangenicGA(benchmark = Benchmark.rastrigin, tam_entradas=24, num_entradas=2, max_geracoes=250, populacao_inicial=100, prob_mut=0.2, prob_p_flip_bit=0.05, prob_p_cruz=0.5, tam_torneio=3, fator_aprox_histo=0.0001):
 
     lim_min, lim_max, pesos, solucoes, str_benchmark= Benchmark.info(benchmark)
 
@@ -45,9 +42,9 @@ def trangenicGA(config=4, benchmark = Benchmark.rastrigin, tam_entradas=24, num_
     if sum(solucoes) > 0 and sum(pesos) < 0 or sum(solucoes) < 0 and sum(pesos) > 0:
        solucoes = np.multiply(solucoes, -1)
 
-    return run_trangenicGA(toolbox, config, prob_mut, prob_p_cruz, populacao_inicial, historico, max_geracoes, pesos, sum(np.multiply(solucoes, pesos)))
+    return run_trangenicGA(toolbox, prob_mut, prob_p_cruz, populacao_inicial, historico, max_geracoes, pesos, sum(np.multiply(solucoes, pesos)))
 
-def run_trangenicGA(toolbox, config, prob_mut, prob_p_cruz, populacao_inicial, historico, max_ger, pesos, solucao):
+def run_trangenicGA(toolbox, prob_mut, prob_p_cruz, populacao_inicial, historico, max_ger, pesos, solucao):
     MaxList = []
     AvgList = []
     MinList = []
@@ -66,84 +63,22 @@ def run_trangenicGA(toolbox, config, prob_mut, prob_p_cruz, populacao_inicial, h
 
         #print("-- Geração %i --" % g)
 
-        if config == 0:
-            pais = toolbox.selecionar(pop, int(len(pop) / 2))
-            pais = Trangenic.trangenic(pais, historico, toolbox.avaliacao, toolbox.clone)
 
-            pais += pop
+        pais = Trangenic.trangenic(pop, historico, toolbox.avaliacao, toolbox.clone)
 
-            pais = toolbox.selecionar(pais, len(pop))
+        pais = toolbox.selecionar(pais, int(len(pop)/2))
 
-            pais = list(map(toolbox.clone, pais))
+        pais = list(map(toolbox.clone, pais))
 
-            for filho1, filho2 in zip(pais[::2], pais[1::2]):
+        for filho1, filho2 in zip(pais[::2], pais[1::2]):
 
-                if random.random() < prob_p_cruz:
-                    toolbox.crusar(filho1, filho2)
+            if random.random() < prob_p_cruz:
+                toolbox.crusar(filho1, filho2)
 
-                    del filho1.fitness.values
-                    del filho2.fitness.values
-        elif config == 1:
-            print(len(pop))
-            pais = toolbox.selecionar(pop, int(len(pop) / 2))
-            pais = Trangenic.trangenic(pais, historico, toolbox.avaliacao, toolbox.clone)
+                del filho1.fitness.values
+                del filho2.fitness.values
 
-            pais = toolbox.selecionar(pais, int(len(pop)))
-
-            pais = list(map(toolbox.clone, pais))
-
-            for filho1, filho2 in zip(pais[::2], pais[1::2]):
-
-                if random.random() < prob_p_cruz:
-                    toolbox.crusar(filho1, filho2)
-
-                    del filho1.fitness.values
-                    del filho2.fitness.values
-        elif config == 2:
-            pais = Trangenic.trangenic(pop, historico, toolbox.avaliacao, toolbox.clone)
-
-            pais = toolbox.selecionar(pais, len(pop))
-
-            pais = list(map(toolbox.clone, pais))
-
-            for filho1, filho2 in zip(pais[::2], pais[1::2]):
-
-                if random.random() < prob_p_cruz:
-                    toolbox.crusar(filho1, filho2)
-
-                    del filho1.fitness.values
-                    del filho2.fitness.values
-        elif config == 3:
-            pais = Trangenic.trangenic(pop, historico, toolbox.avaliacao, toolbox.clone)
-
-            pais = toolbox.selecionar(pais+pop, int(len(pop)))
-
-            pais = list(map(toolbox.clone, pais))
-
-            for filho1, filho2 in zip(pais[::2], pais[1::2]):
-
-                if random.random() < prob_p_cruz:
-                    toolbox.crusar(filho1, filho2)
-
-                    del filho1.fitness.values
-                    del filho2.fitness.values
-
-        elif config == 4:
-            pais = Trangenic.trangenic(pop, historico, toolbox.avaliacao, toolbox.clone)
-
-            pais = toolbox.selecionar(pais, int(len(pop)/2))
-
-            pais = list(map(toolbox.clone, pais))
-
-            for filho1, filho2 in zip(pais[::2], pais[1::2]):
-
-                if random.random() < prob_p_cruz:
-                    toolbox.crusar(filho1, filho2)
-
-                    del filho1.fitness.values
-                    del filho2.fitness.values
-
-            pais += toolbox.selecao_elitista(pop, int(len(pop)/2))
+        pais += toolbox.selecao_elitista(pop, int(len(pop)/2))
 
         for mutante in pais:
 

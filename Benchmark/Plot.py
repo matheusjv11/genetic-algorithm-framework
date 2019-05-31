@@ -97,4 +97,4 @@ def get_str(funcao):
         return None
 
 if __name__ == "__main__":
-    plot3D(shubert)
+    plot3D(schaffer)

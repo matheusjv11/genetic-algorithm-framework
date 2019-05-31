@@ -10,7 +10,7 @@ def FluidGA(benchmark = Benchmark.rastrigin, tam_entradas=24, num_entradas=2, ma
 
     lim_min, lim_max, pesos, solucoes, str_benchmark = Benchmark.info(benchmark)
 
-    creator.create("avaliacao", base.Fitness, weights=pesos)  ##setando objetivo das avaliacoes
+    creator.create("avaliacao", base.Fitness, weights=pesos)  ##setando objetivo das avaliacoes ###
 
     creator.create("Individuo", list, fitness=creator.avaliacao)  ##Criando tipo de Individuos
 

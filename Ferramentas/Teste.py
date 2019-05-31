@@ -2,6 +2,8 @@ from Benchmark import Benchmark
 from Algoritmos import TrangenicGA
 from Algoritmos import Theory_Of_ChaosGA
 from Algoritmos import GABasico
+from Algoritmos import HomogeneousGA
+from Algoritmos import FluidGA
 import math
 import numpy as np
 import os
@@ -26,8 +28,7 @@ class Teste:
         self.prob_p_cruz = prob_p_cruz
         self.tam_torneio = tam_torneio
 
-    def config_trans(self, config=4, benchmark=Benchmark.rastrigin, tam_entradas=24, num_entradas=2, max_geracoes=100, populacao_inicial=100, prob_mut=0.2, prob_p_flip_bit=0.05, prob_p_cruz=0.5, tam_torneio=3, fator_aprox_histo=0.0001):
-        self.configur = config
+    def config_trans(self, benchmark=Benchmark.rastrigin, tam_entradas=24, num_entradas=2, max_geracoes=100, populacao_inicial=100, prob_mut=0.2, prob_p_flip_bit=0.05, prob_p_cruz=0.5, tam_torneio=3, fator_aprox_histo=0.0001):
         self.benchmark = benchmark
         self.tam_entradas = tam_entradas
         self.num_entradas = num_entradas
@@ -51,7 +52,7 @@ class Teste:
 
     def run(self):
         if self.algoritmo == TrangenicGA.trangenicGA:
-            melhor, geracao_f, Max, Avg, Min = self.algoritmo(self.configur, self.benchmark, self.tam_entradas,
+            melhor, geracao_f, Max, Avg, Min = self.algoritmo(self.benchmark, self.tam_entradas,
                                                               self.num_entradas, self.max_geracoes,
                                                               self.populacao_inicial, self.prob_mut,
                                                               self.prob_p_flip_bit, self.prob_p_cruz, self.tam_torneio,
@@ -79,6 +80,26 @@ class Teste:
             self.plot(Max, "Fitness maximo", 'Gerações', 'Fitness')
             self.plot(Avg, "Média do Fitness", 'Gerações', 'Fitness')
             self.plot(Min, "Fitness mínimo", 'Gerações', 'Fitness')
+        elif self.algoritmo == HomogeneousGA.homogeneousGA:
+            melhor, geracao_f, Max, Avg, Min = self.algoritmo(self.benchmark, self.tam_entradas,
+                                                              self.num_entradas, self.max_geracoes,
+                                                              self.populacao_inicial, self.prob_mut,
+                                                              self.prob_p_flip_bit, self.prob_p_cruz, self.tam_torneio,
+                                                              self.fator_aprox_histo)
+            print("melhor Individuo: " + str(melhor))
+            print("Geração Final: " + str(geracao_f))
+            self.plot(Max, "Fitness maximo", 'Gerações', 'Fitness')
+            self.plot(Avg, "Média do Fitness", 'Gerações', 'Fitness')
+            self.plot(Min, "Fitness mínimo", 'Gerações', 'Fitness')
+        elif self.algoritmo == FluidGA.FluidGA:
+            melhor, geracao_f, Max, Avg, Min = self.algoritmo(self.tam_entradas, self.num_entradas,
+                                                              self.max_geracoes, self.populacao_inicial, self.prob_mut,
+                                                              self.prob_p_flip_bit, self.prob_p_cruz, self.tam_torneio)
+            print("melhor Individuo: " + str(melhor))
+            print("Geração Final: " + str(geracao_f))
+            self.plot(Max, "Fitness maximo", 'Gerações', 'Fitness')
+            self.plot(Avg, "Média do Fitness", 'Gerações', 'Fitness')
+            self.plot(Min, "Fitness mínimo", 'Gerações', 'Fitness')
         return melhor, geracao_f, Max, Avg, Min
 
     def teste(self):
@@ -88,7 +109,7 @@ class Teste:
         for i in range(self.num):
             print('Fazendo Teste Número ({})'.format(i))
             if(self.algoritmo == TrangenicGA.trangenicGA):
-                melhor, geracao_f, Max, Avg, Min = self.algoritmo(self.configur, self.benchmark, self.tam_entradas,
+                melhor, geracao_f, Max, Avg, Min = self.algoritmo(self.benchmark, self.tam_entradas,
                                                                   self.num_entradas, self.max_geracoes,
                                                                   self.populacao_inicial, self.prob_mut,
                                                                   self.prob_p_flip_bit, self.prob_p_cruz,
@@ -112,6 +133,26 @@ class Teste:
                 melhor, geracao_f, Max, Avg, Min = self.algoritmo(self.benchmark, self.tam_entradas, self.num_entradas,
                                                               self.max_geracoes, self.populacao_inicial, self.prob_mut,
                                                               self.prob_p_flip_bit, self.prob_p_cruz, self.tam_torneio)
+                melhores.append(melhor)
+                geracoes_finais.append(geracao_f)
+                if geracao_f == self.max_geracoes:
+                    nao_convergidos = nao_convergidos + 1
+                titulo, eixo_x_M, eixo_y_M, eixo_x_G, eixo_y_G = 'Basic GA with ' + Benchmark.info(self.benchmark)[4], 'Number of the Test', 'Evaluation of the Best Individual', 'Number of the Test', 'Final Generation'
+            elif self.algoritmo == HomogeneousGA.homogeneousGA:
+                melhor, geracao_f, Max, Avg, Min = self.algoritmo(self.benchmark, self.tam_entradas,
+                                                                  self.num_entradas, self.max_geracoes,
+                                                                  self.populacao_inicial, self.prob_mut,
+                                                                  self.prob_p_flip_bit, self.prob_p_cruz,
+                                                                  self.tam_torneio, self.fator_aprox_histo)
+                melhores.append(melhor)
+                geracoes_finais.append(geracao_f)
+                if geracao_f == self.max_geracoes:
+                    nao_convergidos = nao_convergidos + 1
+                titulo, eixo_x_M, eixo_y_M , eixo_x_G, eixo_y_G= 'Transgenic GA with ' + Benchmark.info(self.benchmark)[4], 'Number of the Test', 'Evaluation of the Best Individual', 'Number of the Test', 'Final Generation'
+            elif self.algoritmo == FluidGA.FluidGA:
+                melhor, geracao_f, Max, Avg, Min = self.algoritmo(self.benchmark, self.tam_entradas, self.num_entradas,
+                                                                  self.max_geracoes, self.populacao_inicial, self.prob_mut,
+                                                                  self.prob_p_flip_bit, self.prob_p_cruz, self.tam_torneio)
                 melhores.append(melhor)
                 geracoes_finais.append(geracao_f)
                 if geracao_f == self.max_geracoes:
